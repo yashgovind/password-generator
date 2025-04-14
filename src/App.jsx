@@ -2,30 +2,19 @@ import React, { useCallback, useEffect, useState, useRef } from 'react';
 import './index.css';
 
 function App() {
-  // state variables.
   const [length, setLength] = useState(8);
   const [numberAllowed, setNumberAllowed] = useState(false);
   const [characterAllowed, setCharacterAllowed] = useState(false);
   const [password, setPassword] = useState("");
-
-  // useRef hook
   const passwordRef = useRef(null);
 
-  // password generator logic
   const passwordGenerator = useCallback(() => {
     let pass = "";
     let str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-    if (numberAllowed) {
-      str += "0123456789";
-    }
-    if (characterAllowed) {
-      str += "!@#$$%^*()_-=+/*.,;:'{}]|";
-    }
-
-    // Use the correct length of the string for random character selection
-    for (let i = 0; i < length; i++){
-      let char = Math.floor(Math.random() * str.length);
+    if (numberAllowed) str += "0123456789";
+    if (characterAllowed) str += "!@#$%^&*()_-+=[]{}~`";
+    for (let i = 0; i < length; i++) {
+      const char = Math.floor(Math.random() * str.length);
       pass += str.charAt(char);
     }
     setPassword(pass);
@@ -36,65 +25,75 @@ function App() {
   }, [length, numberAllowed, characterAllowed, passwordGenerator]);
 
   const copyPassToClipboard = useCallback(() => {
-    if (passwordRef.current) {
-      passwordRef.current.select();
-      passwordRef.current.setSelectionRange(0, 9999);
-      window.navigator.clipboard.writeText(password);
-    }
+    passwordRef.current?.select();
+    passwordRef.current?.setSelectionRange(0, 9999);
+    navigator.clipboard.writeText(password);
   }, [password]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-gray-800 to-gray-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-gray-800 text-orange-500 rounded-lg shadow-lg p-6">
-        <h1 className="text-3xl font-bold text-center mb-6 text-white">
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
+      <div className="w-full max-w-md mx-4 bg-gray-800 rounded-xl shadow-2xl p-6">
+        {/* Header */}
+        <h1 className="text-2xl md:text-3xl font-bold text-center text-white mb-6">
           Password Generator
         </h1>
-        <div className="flex shadow rounded-lg overflow-hidden mb-4">
+
+        {/* Password Display */}
+        <div className="flex flex-col sm:flex-row gap-2 mb-6">
           <input
             type="text"
             value={password}
-            className="w-full py-2 px-3 text-center rounded-l-lg focus:outline-none bg-white"
-            placeholder="Password"
-            ref={passwordRef}
+            className="w-full px-4 py-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Generate password"
             readOnly
+            ref={passwordRef}
           />
           <button
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg transition duration-200"
             onClick={copyPassToClipboard}
+            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 whitespace-nowrap"
           >
             Copy
           </button>
         </div>
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
+
+        {/* Controls */}
+        <div className="space-y-6">
+          {/* Length Slider */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="text-white text-sm md:text-base">Length</label>
+              <span className="text-blue-400 font-mono text-lg">{length}</span>
+            </div>
             <input
               type="range"
-              min={6}
-              max={100}
+              min="6"
+              max="100"
               value={length}
-              onChange={(e) => setLength(Number(e.target.value))}
-              className="cursor-pointer"
+              onChange={(e) => setLength(e.target.value)}
+              className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
             />
-            <span className="text-white text-center text-xl">Length {length}</span>
           </div>
-          <div className="flex items-center gap-4">
-            <label className="flex items-center text-white">
+
+          {/* Checkboxes */}
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+            <label className="flex items-center space-x-2">
               <input
                 type="checkbox"
                 checked={numberAllowed}
                 onChange={() => setNumberAllowed(prev => !prev)}
-                className="mr-1"
+                className="w-5 h-5 text-blue-600 rounded focus:ring-blue-600"
               />
-              Numbers
+              <span className="text-white text-sm md:text-base">Numbers</span>
             </label>
-            <label className="flex items-center text-white">
+
+            <label className="flex items-center space-x-2">
               <input
                 type="checkbox"
                 checked={characterAllowed}
                 onChange={() => setCharacterAllowed(prev => !prev)}
-                className="mr-1"
+                className="w-5 h-5 text-blue-600 rounded focus:ring-blue-600"
               />
-              Characters
+              <span className="text-white text-sm md:text-base">Special Characters</span>
             </label>
           </div>
         </div>

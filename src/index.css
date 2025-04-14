@@ -4,3 +4,20 @@ body{
   background-color: #212121;
   color:#ffff;
 }
+/* Custom range slider */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 16px;
+  width: 16px;
+  background: #2563eb;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  background: #2563eb;
+  border-radius: 50%;
+  cursor: pointer;
+}
